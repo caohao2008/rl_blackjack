@@ -63,6 +63,11 @@ def make_status(a,b):
 
 ns={}
 
+
+def double_update(a,b,mdp):
+    update(a,b,mdp)
+    update(b,a,mdp)
+
 def update(a,b,mdp):
     statuses = make_status(a,b)
     cnt=0
@@ -76,7 +81,6 @@ def update(a,b,mdp):
             mdp[s_a]=0
         ns[s_a]=ns[s_a]+1
         mdp[s_a]=((ns[s_a]-1)*mdp[s_a]+judgeWin(a,b))/float(ns[s_a])
-       
         cnt=cnt+1
        
 mdp={}
@@ -146,7 +150,8 @@ def play_loop(mode):
             lose=lose+1
         else:
             win=win+1 
-        update(a,b,mdp)
+        #update(a,b,mdp)
+        double_update(a,b,mdp)
         #print(i)
     print "total : win =",win,", lose =",lose," tie=",ping
 
