@@ -4,31 +4,34 @@ import sys
 import random
 
 def judgeTerminate(a,b):
-    if(len(a)==0 or len(b)==0):
-        return 0
-    elif len(a)>=3 or len(b)>=3:
+    if len(a)>=3 or len(b)>=3:
+        return 1
+    elif sum(a)>21 and sum(b)>21:
         return 1
     else:
         return 0
 
 def init_draw(a,b):
-    a.append(int(random.random()*100)%11+1)
-    b.append(int(random.random()*100)%11+1)
+    a.append(rand_draw())
+    b.append(rand_draw())
     return a,b
 
 
 def rand_draw():
-    return int(random.random()*100)%11+1
+    res = int(random.random()*100)%14+1
+    if res>=11:
+        res = 10
+    return res
  
 
 def draw(a,b):
     yes_or_no=random.random()
     if(yes_or_no<0.5):
-       a.append(int(random.random()*100)%11+1)
+       a.append(rand_draw())
      
     yes_or_no=random.random()
     if(yes_or_no<0.5):
-       b.append(int(random.random()*100)%11+1)
+       b.append(rand_draw())
     return a,b
 
 def judgeWin(a,b):
@@ -98,7 +101,7 @@ mdp={}
 def draw_with_model(a,b,mdp):
     yes_or_no=random.random()
     if(yes_or_no<0.5):
-       b.append(int(random.random()*100)%11+1)
+       b.append(rand_draw())
    
     if(len(b)==0):
         return a,b
@@ -115,7 +118,7 @@ def draw_with_model(a,b,mdp):
         a_s_a_n =  mdp[a_s_n]
     #print a_s+","+"y:"+str(a_s_a_y)+",n:"+str(a_s_a_n)
     if(a_s_a_y>=a_s_a_n):
-        a.append(int(random.random()*100)%11+1)
+        a.append(rand_draw())
     
     return a,b
 
@@ -128,11 +131,11 @@ def sum(a):
 def draw_with_rule(a,b,mdp):
     yes_or_no=random.random()
     if(yes_or_no<0.5):
-       b.append(int(random.random()*100)%11+1)
+       b.append(rand_draw())
    
     a_sum=sum(a)
     if(a_sum<11):
-        a.append(int(random.random()*100)%11+1)
+        a.append(rand_draw())
 
     return a,b
 
@@ -143,6 +146,7 @@ def play_loop(mode):
     for i in range(1,100000):
         a=[]
         b=[]
+        a,b = init_draw(a,b)
         while(not judgeTerminate(a,b)):
             #draw pocket
             if(mode=='train'):
@@ -153,7 +157,7 @@ def play_loop(mode):
                 a,b = draw_with_rule(a,b,mdp)
             elif(mode=='self-play'):
                 a,b = self_play_with_mdp()  
-        	print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
+        	#print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
 
         #print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
         if(judgeWin(a,b)==0):
