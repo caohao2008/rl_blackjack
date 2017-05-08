@@ -151,7 +151,9 @@ def play_loop(mode):
                 a,b = draw_with_model(a,b,mdp)
             elif(mode=='rule'):
                 a,b = draw_with_rule(a,b,mdp)
-        
+            elif(mode=='self-play'):
+                a,b = self_play_with_mdp()  
+        	print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
 
         #print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
         if(judgeWin(a,b)==0):
@@ -160,8 +162,8 @@ def play_loop(mode):
             lose=lose+1
         else:
             win=win+1 
-        #update(a,b,mdp)
-        double_update(a,b,mdp)
+        update(a,b,mdp)
+        #double_update(a,b,mdp)
         #print(i)
     print "total : win =",win,", lose =",lose," tie=",ping
 
@@ -203,8 +205,9 @@ def self_play_with_mdp():
     a=[]
     b=[]
     a,b = init_draw(a,b)
+    a_stop=b_stop=0
+    lunshu=0
     while(1):
-        a_stop=b_stop=0
         #a decision
         a_s = make_current_status(a,b)
         a_s_y = a_s+"y"
@@ -216,43 +219,37 @@ def self_play_with_mdp():
     
         if mdp.has_key(a_s_n): 
             a_s_a_n =  mdp[a_s_n]
-        print a_s+","+"y:"+str(a_s_a_y)+",n:"+str(a_s_a_n)
-        if(sum(a)>21):
-            print "lose!"
-            break
-        if(a_s_a_y>=a_s_a_n):
-            print "draw!"
+        ##print a_s+","+"y:"+str(a_s_a_y)+",n:"+str(a_s_a_n)
+        if(a_s_a_y>=a_s_a_n and sum(a)<21):
+            ##print "draw!"
             a_value = rand_draw()
             a.append(int(a_value))
         else:
             a_stop = 1
-            print "a stop!"
+            ##print "a stop!"
         
         #b decision
         b_s = make_current_status(b,a)
         b_s_y = b_s+"y"
         b_s_n = b_s+"n" 
         b_s_b_y = 0
-        a_s_a_n = 0
+        b_s_b_n = 0
         if mdp.has_key(b_s_y): 
             b_s_b_y =  mdp[b_s_y]
     
         if mdp.has_key(b_s_n): 
             b_s_b_n =  mdp[b_s_n]
-        print b_s+","+"y:"+str(b_s_b_y)+",n:"+str(b_s_b_n)
-        if(sum(b)>21):
-            print "lose!"
-            break
-        if(b_s_b_y>=b_s_b_n):
-            print "b draw!"
+        ##print b_s+","+"y:"+str(b_s_b_y)+",n:"+str(b_s_b_n)
+        if(b_s_b_y>=b_s_b_n and sum(b)<21):
+            ##print "b draw!"
             b_value = rand_draw()
             b.append(int(b_value))
         else:
             b_stop = 1
-            print "b stop!"
+            ##print "b stop!"
         
         if(a_stop==1 and b_stop==1):
-            print "stop!"
+            ##print "stop!"
             break
     return a,b
 
@@ -260,9 +257,16 @@ def self_play_with_mdp():
 play_loop('train')
 play_loop('rule')
 play_loop('mc')
+play_loop('self-play')
+play_loop('mc')
 
 #use mdp to self play!
-for i in range(1,1000):
-    a,b = self_play_with_mdp()
+#for i in range(1,1000):
+#    a,b = self_play_with_mdp()
 
-    print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
+#    print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
+
+
+#use mdp to play!
+#while(1):
+#    play_with_mdp()
