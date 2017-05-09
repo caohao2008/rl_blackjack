@@ -139,6 +139,22 @@ def draw_with_rule(a,b,mdp):
 
     return a,b
 
+def draw_with_rule2(a,b,mdp):
+    yes_or_no=random.random()
+    if(yes_or_no<0.5):
+       b.append(rand_draw())
+   
+    a_sum=sum(a)
+    if(a_sum<11):
+        a.append(rand_draw())
+    elif(a_sum>11 and a_sum<16):
+        yes_or_no=random.random()
+        if(a_sum+yes_or_no*10<=21):
+            a.append(rand_draw())
+    return a,b
+
+
+
 
 
 def play_loop(mode): 
@@ -155,6 +171,8 @@ def play_loop(mode):
                 a,b = draw_with_model(a,b,mdp)
             elif(mode=='rule'):
                 a,b = draw_with_rule(a,b,mdp)
+            elif(mode=='rule2'):
+                a,b = draw_with_rule2(a,b,mdp)
             elif(mode=='self-play'):
                 a,b = self_play_with_mdp()  
         	#print("a="+str(a)+" b="+str(b)+"\t"+str(judgeWin(a,b)) )
@@ -260,6 +278,7 @@ def self_play_with_mdp():
 
 play_loop('train')
 play_loop('rule')
+#play_loop('rule2')
 play_loop('mc')
 play_loop('self-play')
 play_loop('mc')
